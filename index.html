@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Live Chat App</title>
+  <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+  <div>
+    <h1>Live Chat</h1>
+    <input id="username" placeholder="Enter your username">
+    <textarea id="message" placeholder="Enter your message"></textarea>
+    <button onclick="sendMessage()">Send Message</button>
+    <div id="chat"></div>
+  </div>
+
+  <script>
+    const socket = io();
+
+    socket.on('message', (data) => {
+      const chat = document.getElementById('chat');
+      chat.innerHTML += `<p><strong>${data.username}:</strong> ${data.message} <em>(Coins left: ${data.remainingCoins})</em></p>`;
+    });
+
+    socket.on('error', (error) => {
+      alert(error);
+    });
+
+    function sendMessage() {
+      const username = document.getElementById('username').value;
+      const message = document.getElementById('message').value;
+      socket.emit('sendMessage', { username, message });
+    }
+  </script>
+</body>
+</html>
